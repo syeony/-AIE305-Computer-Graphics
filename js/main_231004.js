@@ -29,7 +29,8 @@ function is_pt_inside_circle(pt, circle) {
 }
 
 function is_pt_inside_box(pt, box) {
-    return false; //Need to write!
+    return (box.min.x<pt.x && pt.x<box.max.x && box.min.y<pt.y && pt.y<box.max.y);
+     //Need to write!
 }
 
 function draw_sample_point() {
@@ -38,7 +39,11 @@ function draw_sample_point() {
             let pt = new THREE.Vector2(i, j);
             let color = 'black';
             let size = 1;
-            if (is_pt_inside_circle(pt, circleData)) {
+            if ((is_pt_inside_circle(pt, circleData))&&(is_pt_inside_box(pt, boxData))){
+                color = 'green';
+                size = 3;
+            }
+            else if (is_pt_inside_circle(pt, circleData)) {
                 color = 'blue';
                 size = 2;
             }
@@ -71,6 +76,22 @@ function keyDown(e) {
         circleData.center.y -= 5;
     else if (e.key === 'ArrowDown' || e.key === 'Down')
         circleData.center.y += 5;
+    else if (e.key == 'A' || e.key == 'a'){
+        boxData.min.x -= 5;
+        boxData.max.x -= 5;
+        }
+    else if (e.key == 'W' || e.key == 'w'){
+        boxData.min.y -= 5;
+        boxData.max.y -= 5;
+    }
+    else if (e.key == 'S' || e.key == 's'){
+        boxData.min.y += 5;
+        boxData.max.y += 5;
+    }
+    else if (e.key == 'D' || e.key == 'd'){
+        boxData.min.x += 5;
+        boxData.max.x += 5;
+    }
 }
 
 //Animation Callback

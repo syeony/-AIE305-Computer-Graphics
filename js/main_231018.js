@@ -2,7 +2,7 @@ let c = document.getElementById("myCanvas");
 let ctx = c.getContext("2d");
 let circleData = { center: new THREE.Vector2(375, 375), radius: 50 };
 
-let redSet = new Set();
+let redSet = new Set(); //중복을 허용하지 않는 array
 
 //Get mouse position
 function get_mouse_position(c, e) {
@@ -18,23 +18,36 @@ c.addEventListener("mousemove", function(e) {
     var mousePos = get_mouse_position(c,e);
     circleData.center.x = mousePos.x;
     circleData.center.y = mousePos.y;
-})
-c.addEventListener("click", function(e) {
-    var mousePos = get_mouse_position(c,e);
-    console.log("click",mousePos.x,mousePos.y)
-    for (i = 0; i <= 750; i += 10) {
-        for (j = 0; j <= 750; j += 10) {
-            let pt = new THREE.Vector2(i, j);
-            if (is_pt_inside_circle(pt, circleData))
-                redSet.add(pt.x.toString()+','+pt.y.toString());
+
+    if(check){
+        for (i = 0; i <= 750; i += 10) {
+            for (j = 0; j <= 750; j += 10) {
+                let pt = new THREE.Vector2(i, j);
+                if (is_pt_inside_circle(pt, circleData))
+                    redSet.add(pt.x.toString()+','+pt.y.toString());
+            }
         }
     }
+})
+c.addEventListener("mousedown", function(e) {
+    var mousePos = get_mouse_position(c,e);
+    console.log("mousedown",mousePos.x,mousePos.y)
+    check=true;
+})
+c.addEventListener("mouseup", function(e) {
+    var mousePos = get_mouse_position(c,e);
+    console.log("mousedown",mousePos.x,mousePos.y)
+    check=false;
 })
 c.addEventListener("wheel", function (e) {
     if (e.deltaY > 0) {
       circleData.radius += 1;
-    } else {
+    } 
+    else {
       circleData.radius -= 1;
+      if(circleData.radius<0){
+        circleData.radius=0;
+      }
     }
   });
 
@@ -68,6 +81,9 @@ function draw_sample_point() {
             if (is_pt_inside_circle(pt, circleData) || redSet.has(pt.x.toString()+','+pt.y.toString())) {
                 color = "#ff0000";
                 size = 2;
+                if(i%20==0){
+                    color="#00ff00";
+                }
             }
             else{
                 color = 'black';

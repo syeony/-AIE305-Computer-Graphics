@@ -22,38 +22,53 @@ function draw_box(minPt, maxPt, isFill) {
 
 function draw_circle(ctr, rad, isFill) {
     ctx.beginPath();
-    ctx.arc(ctr.x, ctr.y, rad,0, 2 * Math.PI);
+    ctx.arc(ctr.x, ctr.y, rad,0, 2 * Math.PI);//중심점,반지름,0도부터2파이까지
     if (isFill)
-        ctx.fill();
+        ctx.fill();//색채워짐
     else
-        ctx.stroke();
+        ctx.stroke();//라인만
 }
 
 function draw_image() {
-    let isFill = false;
-    if (box_box_collision(boxPts[0], boxPts[1], boxPts[2], boxPts[3]))
+    circleCtr = new THREE.Vector2(250, 250);
+    let isFill = false; // 원이 채워졌는지 여부
+    if (circle_box_collision(circleCtr, 50, boxPts[2], boxPts[3])) {
         isFill = true;
-    ctx.strokeStyle = "green";
-    ctx.fillStyle = "green"
-    draw_box(boxPts[0], boxPts[1], isFill)
-    ctx.strokeStyle = "red"
-    ctx.fillStyle = "red"
-    draw_box(boxPts[2], boxPts[3], isFill)
+    }
+    
+    ctx.strokeStyle = "red";
+    ctx.fillStyle = "red";
+    draw_box(boxPts[2], boxPts[3], isFill);
 
-    // //도전과제
-    // ctx.strokeStyle = "blue"
-    // ctx.fillStyle = "blue"
-    // circleCtr = new THREE.Vector2(250,250);
-    // draw_circle(circleCtr,50,false);
+    ctx.strokeStyle = "blue";
+    ctx.fillStyle = "blue";
+    draw_circle(circleCtr, 50, isFill);
+
 }
 
-function box_box_collision(pMin, pMax, qMin, qMax) {
+function circle_box_collision(circleCtr, rad, boxMin, boxMax) {
+    // 원의 중심과 사각형의 가장 가까운 점 찾기
+    let closestX = Math.max(boxMin.x, Math.min(circleCtr.x, boxMax.x));
+    let closestY = Math.max(boxMin.y, Math.min(circleCtr.y, boxMax.y));
+    // 원의 중심과 가장 가까운 점 간의 거리 계산
+    let distanceX = circleCtr.x - closestX;
+    let distanceY = circleCtr.y - closestY;
+    let distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+    // 거리가 반지름보다 작거나 같으면 충돌감지(색 채워짐)
+    return distance <= rad;
+   }
+   
+/*function circle_box_collision(circleCtr, rad, boxMin, boxMax) {
     if (
-        false//Need to write..
-      ) 
+        circleCtr.x + rad > boxMin.x &&
+        circleCtr.x - rad < boxMax.x &&
+        circleCtr.y + rad > boxMin.y &&
+        circleCtr.y - rad < boxMax.y
+    ) {
         return true;
-    return false
-}
+    }
+    return false;
+}*/
 
 //Keyboard Input
 function keyDown(e) {

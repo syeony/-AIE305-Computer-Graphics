@@ -53,7 +53,10 @@ function line_line_intersection(p0, p1, p2, p3) {
     console.log(intersectionY);
 
     let intersectionPt = new THREE.Vector2(intersectionX, intersectionY);
-    draw_point(intersectionPt);
+    if((p0.x<=intersectionX)&&(p1.x>=intersectionX)
+    &&(p3.x>=intersectionX)){
+        draw_point(intersectionPt);
+    }
 }
 
 //Keyboard Input
